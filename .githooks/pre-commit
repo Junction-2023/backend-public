@@ -1,0 +1,12 @@
+#!/bin/bash
+
+GIT_DIR=$(git rev-parse --show-toplevel)
+$GIT_DIR/gradlew ktlintCheck
+
+# 만약 ktlinkCheck가 실패하면 자동으로 ./gradlew ktlintFormat을 실행하고 커밋을 다시 시도한다.
+if [ $? -ne 0 ]; then
+    echo "ktlint check failed: running ktlint format..."
+    $GIT_DIR/gradlew ktlintFormat
+    git add .
+    exit 0
+fi
